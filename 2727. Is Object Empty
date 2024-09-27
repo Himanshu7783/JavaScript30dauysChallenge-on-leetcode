@@ -1,0 +1,69 @@
+Problem:
+
+Given an object or an array, return if it is empty.
+
+An empty object contains no key-value pairs.
+An empty array contains no elements.
+You may assume the object or array is the output of JSON.parse.
+
+ 
+
+Example 1:
+
+Input: obj = {"x": 5, "y": 42}
+Output: false
+Explanation: The object has 2 key-value pairs so it is not empty.
+Example 2:
+
+Input: obj = {}
+Output: true
+Explanation: The object doesn't have any key-value pairs so it is empty.
+Example 3:
+
+Input: obj = [null, false, 0]
+Output: false
+Explanation: The array has 3 elements so it is not empty.
+ 
+
+Constraints:
+
+obj is a valid JSON object or array
+2 <= JSON.stringify(obj).length <= 105
+
+
+Solution JavaScript:
+
+/**
+ * @param {Object|Array} obj
+ * @return {boolean}
+ */
+var isEmpty = function(obj) {
+    for (const _ in obj) return false;
+    return true;
+};
+The for...in loop is used to iterate over the properties of the object. If the loop encounters at least one property, false is returned to indicate that the object is not empty.
+
+If the loop iterates through the entire object without finding any properties, the function returns true to indicate that the object is empty.
+
+Solution TypeScript:
+type JSONValue = null | boolean | number | string | JSONValue[] | { [key: string]: JSONValue };
+type Obj = Record<string, JSONValue> | JSONValue[]
+
+function isEmpty(obj: Obj): boolean {
+ for (const _ in obj) return false;
+    return true;
+};
+
+
+The for...in loop is used to iterate over the properties of the object. If the loop encounters at least one property, false is returned to indicate that the object is not empty.
+
+If the loop iterates through the entire object without finding any properties, the function returns true to indicate that the object is empty.
+
+Link to problem:
+https://leetcode.com/problems/is-object-empty/description/?envType=study-plan-v2&envId=30-days-of-javascript
+
+
+
+
+
+ 
