@@ -1,0 +1,94 @@
+Problem:
+
+Given a positive integer millis, write an asynchronous function that sleeps for millis milliseconds. It can resolve any value.
+
+ 
+
+Example 1:
+
+Input: millis = 100
+Output: 100
+Explanation: It should return a promise that resolves after 100ms.
+let t = Date.now();
+sleep(100).then(() => {
+  console.log(Date.now() - t); // 100
+});
+Example 2:
+
+Input: millis = 200
+Output: 200
+Explanation: It should return a promise that resolves after 200ms.
+ 
+
+Constraints:
+
+1 <= millis <= 1000
+
+SOLUTION : 
+
+
+Problem Description
+The problem requires the creation of an asynchronous function in TypeScript that simulates a sleep or delay for a specified number of milliseconds given by the input parameter 'millis'.
+The 'millis' is a positive integer representing the time to pause execution of further code.
+Upon completing the specified pause duration, the function should be able to resume operation although it doesn't need to return any specific value or perform any particular action after the wait is over.
+The execution should move on, and that is the only requirement.
+
+Intuition
+The solution is straightforward due to the nature of JavaScript and TypeScript's handling of asynchronous operations via the Promises API and the built-in setTimeout function.
+
+setTimeout is used to delay the execution of a function by a certain number of milliseconds. It is a non-blocking operation, 
+meaning it allows the JavaScript runtime to continue executing other tasks in the event loop while waiting for the timeout to complete.
+
+By wrapping setTimeout in a Promise, we are creating a promise that will resolve after a set amount of time, thus introducing a pause or sleep effect. 
+This can be done by passing a resolve function r to the promise constructor, and then passing that resolve function to setTimeout.
+The setTimeout function calls r after the specified millis, signaling to the Promise that it is complete.
+Since we do not care about the value with which the promise resolves, r can be called with no arguments.
+
+When we call the sleep function with await in an async function or use .then() after its invocation, 
+the JavaScript runtime will halt the execution of that function, thus effectively "sleeping", until the set amount of time has passed.
+
+The simplicity of this solution makes it an elegant and widely used approach to introduce a deliberate pause in asynchronous execution without blocking the JavaScript event loop.
+
+Solution Approach
+The solution takes advantage of the JavaScript event loop and the Promise object to effectively pause execution asynchronously.
+There are no complex algorithms, data structures, or patterns needed, as the solution leverages existing JavaScript/TypeScript functionalities to accomplish the 'sleep' behavior.
+
+Here's a step-by-step explanation of how the provided solution accomplishes the delay:
+
+An asynchronous function sleep is declared that takes a single parameter, millis, which is a number. 
+This function returns a Promise that resolves to void, since the function does not need to return a value once the delay is complete.
+
+Inside the function, a new Promise is constructed. The constructor of the Promise takes an executor function, which has the resolve function r as an argument.
+
+Within the executor function, we then call setTimeout. This is a built-in function that schedules another function to be run after a given number of milliseconds.
+In this case, our scheduled function is simply the resolve function r, which will be called after millis milliseconds.
+
+By calling the resolve function r after the delay provided by setTimeout, we tell the Promise that it's okay to continue with the next tasks.
+Since there's no need for a specific resolve value, r is called without any arguments.
+
+When the sleep function is used, the caller should either await it (if within an async function) or attach a .then() method to handle the code that should run after the delay. 
+The event loop is not blocked during this delay, allowing other asynchronous operations to continue.
+
+Thus, once the set time has elapsed, the function within setTimeout (in this case, the resolve function r) is added to the call stack and, if the call stack is clear, is executed,
+resolving the promise and effectively "waking" the function out of sleep.
+
+No data structures are used in this solution. The asynchronous nature of the Promise, along with the setTimeout function, provide all the required functionality. 
+This pattern of using setTimeout within a Promise is a common approach to introduce asynchronous delays in JavaScript and TypeScript codebases.
+
+
+  /**
+ * @param {number} millis
+ * @return {Promise}
+ */
+async function sleep(millis) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve()
+        },millis)
+    })
+}
+
+/** 
+ * let t = Date.now()
+ * sleep(100).then(() => console.log(Date.now() - t)) // 100
+ */
