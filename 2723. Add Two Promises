@@ -1,0 +1,98 @@
+Problem: 
+
+2723. Add Two Promises
+
+Given two promises promise1 and promise2, return a new promise. promise1 and promise2 will both resolve with a number. The returned promise should resolve with the sum of the two numbers.
+ 
+
+Example 1:
+
+Input: 
+promise1 = new Promise(resolve => setTimeout(() => resolve(2), 20)), 
+promise2 = new Promise(resolve => setTimeout(() => resolve(5), 60))
+Output: 7
+Explanation: The two input promises resolve with the values of 2 and 5 respectively. The returned promise should resolve with a value of 2 + 5 = 7. 
+The time the returned promise resolves is not judged for this problem.
+Example 2:
+
+Input: 
+promise1 = new Promise(resolve => setTimeout(() => resolve(10), 50)), 
+promise2 = new Promise(resolve => setTimeout(() => resolve(-12), 30))
+Output: -2
+Explanation: The two input promises resolve with the values of 10 and -12 respectively. The returned promise should resolve with a value of 10 + -12 = -2.
+ 
+
+Constraints:
+
+promise1 and promise2 are promises that resolve with a number
+
+  SOLUTION:  
+
+Theoretically, I could finish this article right now by giving a very short answer: just add two promises. However, 
+it could be an enormous misconception of what I really wanted to achieve. Therefore, let’s have a look at how I solved it:
+
+var addTwoPromises = async function(promise1, promise2) {
+ const sum = await promise1 + await promise2
+  return sum
+};
+Pretty concise, however I would like to focus on keyword await and why async function needs it.
+
+await keyword always exists within the async environment. As the name suggests, it waits for the certain condition to be fulfilled.
+In other words pauses the execution of the function until a given promise is resolved.
+In its nature, JavaScript is synchronous, blocking and single-threaded. Therefore, await helps to handle the code more synchronously.
+
+When awaitis used before a promise keyword, JavaScript’s engine will stop executing the code within the async function and will wait until 
+the promise is settled (either resolved or rejected). Once the promise is resolved, the await expression will return the resolved value of the promise, and the execution of the async function will continue.
+
+The most classic example of this operation is simply this line of code:
+
+async function fetchData() {
+  const response = await fetch('https://api.example.com/data');
+  const data = await response.json();
+  return data;
+}
+
+fetchData().then(data => {
+  console.log(data);
+});
+The first await expression pauses the execution of the function until the fetch promise is resolved. Another await expression is used before calling the .json() method on the response object.
+This converts the response body to JSON and returns another promise. await expression pauses the execution again until the JSON promise is resolved.
+
+What is important to underline, await helps promise with execution and does not mean that it returns only when resolve.
+
+For better understanding, it is not necessary to use await keywords in promises, however the promise should always be prepared for the state of success or error.
+If you do not want to await promise, you should at least try to catch the error as a possible scenario.
+
+Therefore, I used awaitkeyword as a solution for this task, mainly because of the mentioned nature of JavaScript. When I would add together
+two promises without await promise1 + promise2 the console will show an error.
+
+Is there any other way to handle with this task? Yes, with the Promise.all().
+
+var addTwoPromises = async (promise1, promise2) => {
+  return Promise.all([promise1, promise2])
+    .then(values => {
+      return values.reduce((a, b) => a + b, 0);
+    });
+};
+As I mentioned, we do not need to use always await keyword with promises. In this case I used the Promise.all() method in order to loop through promises:
+promise1 and promise2 and return a single promise, which I call promise3.
+
+The classical syntax for the method looks like that:
+
+Promise.all([promise1, promise2, promise3]).then((values) => {
+  console.log(values);
+});
+we are iterating through a given array of promises, and when the promise is resolved. Then it takes a callback function that receives the resolved values as an array (referred to as values). 
+So the mechanism is slightly similar to the method I described in my first solution- so far we have received the values of the promises.
+
+However, as you can see I also used a reduce method in order to sum up the values of those. Why not just add values? Because we received an array, not separate elements.
+
+The reduce() method iterates over each value in the array and accumulates them into a single value. In this case, it's summing up all the values in the array using 
+the arrow function (a, b) => a + b. The initial value for the accumulation is 0.
+
+In summary, the purpose of this code is to take two Promises (promise1 and promise2), wait for both of them to resolve using Promise.all(), then sum up their 
+resolved values and return the sum as a single value using the reduce() method.
+The result is wrapped in a Promise due to the use of async and will be resolved with the sum once all the asynchronous operations have been completed.
+
+Whatever approach you decide to use, remember that solving the Leetcode is just one thing. The real-life tasks and solutions differ slightly from those presented during the job interview. 
+However, I still believe it is a valuable brain exercise which can help with critical thinking
