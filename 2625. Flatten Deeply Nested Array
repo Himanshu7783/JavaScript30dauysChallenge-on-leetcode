@@ -1,0 +1,84 @@
+2625. Flatten Deeply Nested Array
+
+Given a multi-dimensional array arr and a depth n, return a flattened version of that array.
+
+A multi-dimensional array is a recursive data structure that contains integers or other multi-dimensional arrays.
+
+A flattened array is a version of that array with some or all of the sub-arrays removed and replaced with the actual elements in that sub-array. This flattening operation should only be done if the current depth of nesting is less than n. The depth of the elements in the first array are considered to be 0.
+
+Please solve it without the built-in Array.flat method.
+
+ 
+
+Example 1:
+
+Input
+arr = [1, 2, 3, [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]]
+n = 0
+Output
+[1, 2, 3, [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]]
+
+Explanation
+Passing a depth of n=0 will always result in the original array. This is because the smallest possible depth of a subarray (0) is not less than n=0. Thus, no subarray should be flattened. 
+Example 2:
+
+Input
+arr = [1, 2, 3, [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]]
+n = 1
+Output
+[1, 2, 3, 4, 5, 6, 7, 8, [9, 10, 11], 12, 13, 14, 15]
+
+Explanation
+The subarrays starting with 4, 7, and 13 are all flattened. This is because their depth of 0 is less than 1. However [9, 10, 11] remains unflattened because its depth is 1.
+Example 3:
+
+Input
+arr = [[1, 2, 3], [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]]
+n = 2
+Output
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+Explanation
+The maximum depth of any subarray is 1. Thus, all of them are flattened.
+ 
+
+Constraints:
+
+0 <= count of numbers in arr <= 105
+0 <= count of subarrays in arr <= 105
+maxDepth <= 1000
+-1000 <= each number <= 1000
+0 <= n <= 1000
+
+
+Solutions
+Looking to practice more questions like these? We recommend GreatFrontEnd, the best platform for honing your frontend interview skills!
+
+Since multi-dimensional arrays can be nested to many levels, the best approach is often recursion. A recursive function is one that calls itself to handle smaller and smaller
+instances of the same problem. Think of it like unwrapping nested boxes -- to unwrap the innermost box, you must first unwrap all the larger boxes containing it.
+
+First, create a flat function that takes arr and n . In the flat , createe an empty array named result to hold the elements as we flatten them.
+
+loop to iterate through each item within the input array (arr). If the item is an array and we still have depth left, we call flat again on that nested array,
+with the depth decreased by one. This continues until either the depth runs out or all the nested arrays have been unpacked.
+
+The spread operator (...) takes the elements from the recursively flattened array returned, and spreads them into our current result array.
+
+If the current item we're checking isn't an array, or if we've reached a depth of 0, we simply push it into the result array. There's nothing to flatten in these cases.
+
+After the loop and all recursive calls finish, the final flattened array (result) is returned from the function.
+
+function flat(arr, n) {
+  const result = []; // Store the flattened elements
+
+  for (let item of arr) {
+    if (Array.isArray(item) && n > 0) {
+      // If the element is an array and we haven't reached max depth...
+      result.push(...flat(item, n - 1)); // Recursively flatten it
+    } else {
+      result.push(item); // Otherwise, just add the element directly
+    }
+  }
+
+  return result;
+}
